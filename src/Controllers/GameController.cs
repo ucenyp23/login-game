@@ -1,6 +1,6 @@
 using login_game.Models;
+using login_game.Data;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
 
 namespace login_game.Controllers
 {
@@ -37,7 +37,7 @@ namespace login_game.Controllers
                 ViewData["chyba"] += "Passwords don't match.";
 
             Game? existingUsers = _context.
-                Uzivatele.FirstOrDefault(u => u.Username == name);
+                Game.FirstOrDefault(u => u.Username == name);
 
             if (existingUsers != null)
                 ViewData["chyba"] = "Uživatel s tímto jménem již existuje.";
@@ -49,7 +49,7 @@ namespace login_game.Controllers
 
             Game newUser = new Game() { Username = name, Password = password };
 
-            _context.Uzivatele.Add(newUser);
+            _context.Games.Add(newUser);
             _context.SaveChanges();
 
             return RedirectToAction("Login");
