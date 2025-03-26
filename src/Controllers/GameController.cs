@@ -47,7 +47,7 @@ namespace login_game.Controllers
 
             password = BCrypt.Net.BCrypt.HashPassword(password);
 
-            Game newUser = new Game() { Username = name, passwd = password };
+            Game newUser = new Game() { Username = name, Password = password };
 
             _context.Uzivatele.Add(newUser);
             _context.SaveChanges();

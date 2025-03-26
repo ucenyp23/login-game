@@ -11,7 +11,7 @@ namespace login_game
             builder.Services.AddControllersWithViews();
             builder.Services.AddDbContext<Context>(options =>
                 options.UseSqlServer(
-                    builder.Configuration.GetConnectionString("Database")
+                    builder.Configuration.GetConnectionString("DefaultConnection")
                 )
             );
             builder.Services.AddDistributedMemoryCache();
