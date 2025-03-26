@@ -7,4 +7,8 @@
     <RootNamespace>login_game</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\" />
+  </ItemGroup>
+
 </Project>
