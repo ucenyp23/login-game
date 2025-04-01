@@ -1,9 +1,6 @@
 using login_game.Models;
 using login_game.Data;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication;
-using System.Security.Claims;
 
 namespace login_game.Controllers
 {
@@ -104,6 +101,27 @@ namespace login_game.Controllers
             if (!BCrypt.Net.BCrypt.Verify(password, user.Password))
             {
                 ViewData["error"] = "Invalid password.";
+                return View();
+            }
+
+            HttpContext.Session.SetInt32("UserId", user.Id);
+
+            return RedirectToAction("Questionnaire");
+        }
+
+        [HttpPost]
+        public IActionResult Questionnaire(string name, string password)
+        {
+            if (HttpContext.Session.GetInt32("UserID") == null)
+            {
+                return RedirectToAction("Login");
+            }
+
+            ViewData["error"] = "";
+
+            if (string.IsNullOrEmpty(name))
+            {
+                ViewData["error"] = "";
                 return View();
             }
 

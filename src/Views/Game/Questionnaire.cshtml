@@ -1,13 +1,13 @@
 ﻿@{
-    ViewData["Title"] = "Login";
+    ViewData["Title"] = "Questionnaire";
 }
 
 <div class="text-center">
-    <h1>Login</h1>
-    <form action="/Game/Login" method="post">
+    <h1>Questionnaire</h1>
+    <form action="/Game/Questionnaire" method="post">
         <input type="text" name="name" placeholder="Username..." /><br />
         <input type="password" name="password" placeholder="Password..." /><br />
-        <input type="submit" value="Login" />
+        <input type="submit" value="Submit" />
         <p>@ViewData["error"]</p>
     </form>
 </div>
