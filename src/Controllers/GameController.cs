@@ -29,23 +29,25 @@ namespace login_game.Controllers
         {
             ViewData["chyba"] = "";
 
-            if (name == null || name.Length == 0)
+            if (string.IsNullOrEmpty(name))
                 ViewData["chyba"] += "Username wasn't inputed.";
-            if (password == null || password.Length == 0)
+            else if (string.IsNullOrEmpty(password))
                 ViewData["chyba"] += "Password wasn't inputed.";
-            if (password != password_control)
+            else if (password != password_control)
                 ViewData["chyba"] += "Passwords don't match.";
 
-            Game? existingUsers = _context.
-                Game.FirstOrDefault(u => u.Username == name);
+            Game? existingUsers = _context.Games.FirstOrDefault(u => u.Username == name);
 
             if (existingUsers != null)
                 ViewData["chyba"] = "Uživatel s tímto jménem již existuje.";
 
-            if (ViewData["chyba"] != "")
+            if (ViewData["chyba"]?.ToString() != "")
                 return View();
 
-            password = BCrypt.Net.BCrypt.HashPassword(password);
+            if (!string.IsNullOrEmpty(password))
+            {
+                password = BCrypt.Net.BCrypt.HashPassword(password);
+            }
 
             Game newUser = new Game() { Username = name, Password = password };
 

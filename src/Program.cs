@@ -1,3 +1,4 @@
+using login_game.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace login_game
