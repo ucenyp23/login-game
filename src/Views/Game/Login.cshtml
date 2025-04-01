@@ -1,0 +1,13 @@
+﻿@{
+    ViewData["Title"] = "Login";
+}
+
+<div class="text-center">
+    <h1>Login</h1>
+    <form action="/Game/Login" method="post">
+        <input type="text" name="name" placeholder="Username..." /><br />
+        <input type="password" name="password" placeholder="Password..." /><br />
+        <input type="submit" value="Login" />
+        <p class="chyba">@ViewData["chyba"]</p>
+    </form>
+</div>

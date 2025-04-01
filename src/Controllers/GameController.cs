@@ -1,6 +1,9 @@
 using login_game.Models;
 using login_game.Data;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using System.Security.Claims;
 
 namespace login_game.Controllers
 {
@@ -24,33 +27,87 @@ namespace login_game.Controllers
             return View();
         }
 
+        [HttpGet]
+        public IActionResult Login()
+        {
+            return View();
+        }
+
         [HttpPost]
         public IActionResult Register(string name, string password, string password_control)
         {
-            ViewData["chyba"] = "";
-
-            Game? existingUsers = _context.Games.FirstOrDefault(u => u.Username == name);
+            ViewData["error"] = "";
 
             if (string.IsNullOrEmpty(name))
-                ViewData["chyba"] = "Username wasn't inputed.";
-            else if (string.IsNullOrEmpty(password))
-                ViewData["chyba"] = "Password wasn't inputed.";
-            else if (password != password_control)
-                ViewData["chyba"] = "Passwords don't match.";
-            else if (existingUsers != null)
-                ViewData["chyba"] = "User with this name alredy exists.";
-
-            if (ViewData["chyba"]?.ToString() != "")
+            {
+                ViewData["error"] = "Username wasn't inputed.";
                 return View();
+            }
+            
+            if (string.IsNullOrEmpty(password))
+            {
+                ViewData["error"] = "Password wasn't inputed.";
+                return View();
+            }
 
-            password = BCrypt.Net.BCrypt.HashPassword(password);
+            if (password != password_control)
+            {
+                ViewData["error"] = "Passwords don't match.";
+                return View();
+            }
+            
+            if (_context.Games.Any(u => u.Username == name))
+            {
+                ViewData["error"] = "User with this name alredy exists.";
+                return View();
+            }
 
-            Game newUser = new Game() { Username = name, Password = password };
+            var hashedPassword = BCrypt.Net.BCrypt.HashPassword(password);
+
+            var newUser = new Game
+            {
+                Username = name,
+                Password = hashedPassword
+            };
 
             _context.Games.Add(newUser);
             _context.SaveChanges();
 
             return RedirectToAction("Login");
+        }
+
+        [HttpPost]
+        public IActionResult Login(string name, string password)
+        {
+            ViewData["error"] = "";
+
+            if (string.IsNullOrEmpty(name))
+            {
+                ViewData["error"] = "Username wasn't entered.";
+                return View();
+            }
+
+            if (string.IsNullOrEmpty(password))
+            {
+                ViewData["error"] = "Password wasn't entered.";
+                return View();
+            }
+
+            if (!_context.Games.Any(u => u.Username == name))
+            {
+                ViewData["error"] = "This user does not exist.";
+                return View();
+            }
+
+            var user = _context.Games.First(u => u.Username == name);
+
+            if (!BCrypt.Net.BCrypt.Verify(password, user.Password))
+            {
+                ViewData["error"] = "Invalid password.";
+                return View();
+            }
+
+            return RedirectToAction("Questionnaire");
         }
     }
 }
