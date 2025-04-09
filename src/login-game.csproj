@@ -19,8 +19,4 @@
     <PackageReference Include="Microsoft.Web.LibraryManager.Build" Version="3.0.71" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Migrations\" />
-  </ItemGroup>
-
 </Project>

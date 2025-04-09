@@ -33,9 +33,24 @@ namespace login_game.Controllers
         [HttpGet]
         public IActionResult Questionnaire()
         {
-            if (HttpContext.Session.GetInt32("UserId") == null)
+            var UserId = HttpContext.Session.GetInt32("UserId");
+            var UserPassword = HttpContext.Session.GetString("UserPassword");
+            var User = _context.Users.First(u => u.Id == UserId);
+            var Questionnaire = _context.Questionnaires.First(u => u.Id == UserId);
+
+            if (UserId == null)
             {
                 return RedirectToAction("Login");
+            }
+
+            if (User.Password == UserPassword)
+            {
+                return RedirectToAction("Login");
+            }
+
+            if (!Questionnaire.Active)
+            {
+                return RedirectToAction("Profile");
             }
 
             return View();
@@ -44,9 +59,24 @@ namespace login_game.Controllers
         [HttpGet]
         public IActionResult Profile()
         {
-            if (HttpContext.Session.GetInt32("UserId") == null)
+            var UserId = HttpContext.Session.GetInt32("UserId");
+            var UserPassword = HttpContext.Session.GetString("UserPassword");
+            var User = _context.Users.First(u => u.Id == UserId);
+            var Questionnaire = _context.Questionnaires.First(u => u.Id == UserId);
+
+            if (UserId == null)
             {
                 return RedirectToAction("Login");
+            }
+
+            if (User.Password == UserPassword)
+            {
+                return RedirectToAction("Login");
+            }
+
+            if (Questionnaire.Active == false)
+            {
+                return RedirectToAction("Questionnaire");
             }
 
             return View();
@@ -55,9 +85,24 @@ namespace login_game.Controllers
         [HttpGet]
         public IActionResult Win()
         {
-            if (HttpContext.Session.GetInt32("UserId") == null)
+            var UserId = HttpContext.Session.GetInt32("UserId");
+            var UserPassword = HttpContext.Session.GetString("UserPassword");
+            var User = _context.Users.First(u => u.Id == UserId);
+            var Questionnaire = _context.Questionnaires.First(u => u.Id == UserId);
+
+            if (UserId == null)
             {
                 return RedirectToAction("Login");
+            }
+
+            if (User.Password == UserPassword)
+            {
+                return RedirectToAction("Login");
+            }
+
+            if (Questionnaire.Active == false)
+            {
+                return RedirectToAction("Questionnaire");
             }
 
             return View();
@@ -86,21 +131,21 @@ namespace login_game.Controllers
                 return View();
             }
             
-            if (_context.Games.Any(u => u.Username == name))
+            if (_context.Users.Any(u => u.Username == name))
             {
-                ViewData["error"] = "User with this name alredy exists.";
+                ViewData["error"] = "User with this username alredy exists.";
                 return View();
             }
 
             var hashedPassword = BCrypt.Net.BCrypt.HashPassword(password);
 
-            var newUser = new Game
+            var newUser = new User
             {
                 Username = name,
                 Password = hashedPassword
             };
 
-            _context.Games.Add(newUser);
+            _context.Users.Add(newUser);
             _context.SaveChanges();
 
             return RedirectToAction("Login");
@@ -123,21 +168,22 @@ namespace login_game.Controllers
                 return View();
             }
 
-            if (!_context.Games.Any(u => u.Username == name))
+            if (!_context.Users.Any(u => u.Username == name))
             {
-                ViewData["error"] = "This user does not exist.";
+                ViewData["error"] = "This username doesn't exist.";
                 return View();
             }
 
-            var user = _context.Games.First(u => u.Username == name);
+            var User = _context.Users.First(u => u.Username == name);
 
-            if (!BCrypt.Net.BCrypt.Verify(password, user.Password))
+            if (!BCrypt.Net.BCrypt.Verify(password, User.Password))
             {
-                ViewData["error"] = "Invalid password.";
+                ViewData["error"] = "Password wasn't correct.";
                 return View();
             }
 
-            HttpContext.Session.SetInt32("UserId", user.Id);
+            HttpContext.Session.SetInt32("UserId", User.Id);
+            HttpContext.Session.SetString("UserPassword", User.Password ?? string.Empty);
 
             return RedirectToAction("Questionnaire");
         }
@@ -177,17 +223,32 @@ namespace login_game.Controllers
                 return View();
             }
 
+            var UserId = HttpContext.Session.GetInt32("UserId");
+
+            if (UserId == null)
+            {
+                return RedirectToAction("Login");
+            }
+
+            var newPersonalInfo = new PersonalInfo
+            {
+                Id = UserId.Value,
+                Birthday = birthday,
+                Gender = gender,
+                SecurityQuestion0 = sec0,
+                SecurityQuestion1 = sec1,
+                SecurityQuestion2 = sec2
+            };
+
+            _context.PersonalInfos.Add(newPersonalInfo);
+            _context.SaveChanges();
+
             return RedirectToAction("Profile");
         }
 
         [HttpPost]
         public IActionResult Profile(string button)
         {
-            if (HttpContext.Session.GetInt32("UserId") == null)
-            {
-                return RedirectToAction("Login");
-            }
-
             return RedirectToAction("Win");
         }
     }

@@ -2,13 +2,13 @@
     ViewData["Title"] = "Register";
 }
 
-<div class="text-center">
+<div>
     <h1>Register</h1>
     <form action="/Game/Register" method="post">
         <input type="text" name="name" placeholder="Username..." /><br />
         <input type="password" name="password" placeholder="Password..." /><br />
         <input type="password" name="password_control" placeholder="Password again..." /><br />
-        <input type="submit" value="Register" />
+        <input type="submit" value="Submit" />
         <p style="color: red">@ViewData["error"]</p>
     </form>
 </div>
