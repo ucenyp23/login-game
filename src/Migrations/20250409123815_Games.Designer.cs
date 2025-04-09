@@ -11,7 +11,7 @@ using login_game.Data;
 namespace login_game.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20250401094341_Games")]
+    [Migration("20250409123815_Games")]
     partial class Games
     {
         /// <inheritdoc />

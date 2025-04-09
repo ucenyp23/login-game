@@ -33,18 +33,33 @@ namespace login_game.Controllers
         [HttpGet]
         public IActionResult Questionnaire()
         {
+            if (HttpContext.Session.GetInt32("UserId") == null)
+            {
+                return RedirectToAction("Login");
+            }
+
             return View();
         }
 
         [HttpGet]
         public IActionResult Profile()
         {
+            if (HttpContext.Session.GetInt32("UserId") == null)
+            {
+                return RedirectToAction("Login");
+            }
+
             return View();
         }
 
         [HttpGet]
         public IActionResult Win()
         {
+            if (HttpContext.Session.GetInt32("UserId") == null)
+            {
+                return RedirectToAction("Login");
+            }
+
             return View();
         }
 
@@ -130,11 +145,6 @@ namespace login_game.Controllers
         [HttpPost]
         public IActionResult Questionnaire(string birthday, string gender, string sec0, string sec1, string sec2)
         {
-            if (HttpContext.Session.GetInt32("UserID") == null)
-            {
-                return RedirectToAction("Login");
-            }
-
             ViewData["error"] = "";
 
             if (string.IsNullOrEmpty(birthday))
@@ -167,22 +177,15 @@ namespace login_game.Controllers
                 return View();
             }
 
-            HttpContext.Session.SetInt32("Questionnare", 1);
-
             return RedirectToAction("Profile");
         }
 
         [HttpPost]
         public IActionResult Profile(string button)
         {
-            if (HttpContext.Session.GetInt32("UserID") == null)
+            if (HttpContext.Session.GetInt32("UserId") == null)
             {
                 return RedirectToAction("Login");
-            }
-
-            if (HttpContext.Session.GetInt32("Questionnare") == 1)
-            {
-                return RedirectToAction("Questionnare");
             }
 
             return RedirectToAction("Win");
