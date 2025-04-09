@@ -30,6 +30,24 @@ namespace login_game.Controllers
             return View();
         }
 
+        [HttpGet]
+        public IActionResult Questionnaire()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult Profile()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult Win()
+        {
+            return View();
+        }
+
         [HttpPost]
         public IActionResult Register(string name, string password, string password_control)
         {
@@ -110,7 +128,7 @@ namespace login_game.Controllers
         }
 
         [HttpPost]
-        public IActionResult Questionnaire(string name, string password)
+        public IActionResult Questionnaire(string birthday, string gender, string sec0, string sec1, string sec2)
         {
             if (HttpContext.Session.GetInt32("UserID") == null)
             {
@@ -119,13 +137,55 @@ namespace login_game.Controllers
 
             ViewData["error"] = "";
 
-            if (string.IsNullOrEmpty(name))
+            if (string.IsNullOrEmpty(birthday))
             {
-                ViewData["error"] = "";
+                ViewData["error"] = "Date of birth wasn't entered.";
                 return View();
             }
 
-            return RedirectToAction("Questionnaire");
+            if (string.IsNullOrEmpty(gender))
+            {
+                ViewData["error"] = "Gender wasn't entered.";
+                return View();
+            }
+
+            if (string.IsNullOrEmpty(sec0))
+            {
+                ViewData["error"] = "Security question 1 wasn't entered.";
+                return View();
+            }
+
+            if (string.IsNullOrEmpty(sec1))
+            {
+                ViewData["error"] = "Security question 2 wasn't entered.";
+                return View();
+            }
+
+            if (string.IsNullOrEmpty(sec2))
+            {
+                ViewData["error"] = "Security question 3 wasn't entered.";
+                return View();
+            }
+
+            HttpContext.Session.SetInt32("Questionnare", 1);
+
+            return RedirectToAction("Profile");
+        }
+
+        [HttpPost]
+        public IActionResult Profile(string button)
+        {
+            if (HttpContext.Session.GetInt32("UserID") == null)
+            {
+                return RedirectToAction("Login");
+            }
+
+            if (HttpContext.Session.GetInt32("Questionnare") == 1)
+            {
+                return RedirectToAction("Questionnare");
+            }
+
+            return RedirectToAction("Win");
         }
     }
 }
