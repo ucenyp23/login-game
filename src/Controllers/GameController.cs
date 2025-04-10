@@ -35,16 +35,22 @@ namespace login_game.Controllers
         {
             var UserId = HttpContext.Session.GetInt32("UserId");
             var UserPassword = HttpContext.Session.GetString("UserPassword");
-            var User = _context.Users.First(u => u.Id == UserId);
 
             if (UserId == null)
             {
                 return RedirectToAction("Login");
             }
 
+            var User = _context.Users.First(u => u.Id == UserId);
+
             if (User.Password != UserPassword)
             {
                 return RedirectToAction("Login");
+            }
+
+            if (_context.PersonalInfos.Any(u => u.UserId == UserId))
+            {
+                return RedirectToAction("Profile");
             }
 
             return View();
@@ -55,12 +61,13 @@ namespace login_game.Controllers
         {
             var UserId = HttpContext.Session.GetInt32("UserId");
             var UserPassword = HttpContext.Session.GetString("UserPassword");
-            var User = _context.Users.First(u => u.Id == UserId);
 
             if (UserId == null)
             {
                 return RedirectToAction("Login");
             }
+
+            var User = _context.Users.First(u => u.Id == UserId);
 
             if (User.Password != UserPassword)
             {
@@ -75,17 +82,23 @@ namespace login_game.Controllers
         {
             var UserId = HttpContext.Session.GetInt32("UserId");
             var UserPassword = HttpContext.Session.GetString("UserPassword");
-            var User = _context.Users.First(u => u.Id == UserId);
 
             if (UserId == null)
             {
                 return RedirectToAction("Login");
             }
 
+            var User = _context.Users.First(u => u.Id == UserId);
+
             if (User.Password != UserPassword)
             {
                 return RedirectToAction("Login");
             }
+
+            var random = new Random();
+            int n = random.Next(0, 100);
+
+            ViewData["error"] = n.ToString();
 
             return View();
         }
@@ -204,6 +217,25 @@ namespace login_game.Controllers
                 ViewData["error"] = "Security question 3 wasn't entered.";
                 return View();
             }
+
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null)
+            {
+                return RedirectToAction("Login");
+            }
+
+            var personalInfo = new PersonalInfo
+            {
+                UserId = userId.Value,
+                Birthday = birthday,
+                Gender = gender,
+                SecurityQuestion0 = sec0,
+                SecurityQuestion1 = sec1,
+                SecurityQuestion2 = sec2
+            };
+
+            _context.PersonalInfos.Add(personalInfo);
+            _context.SaveChanges();
 
             return RedirectToAction("Profile");
         }
