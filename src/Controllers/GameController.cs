@@ -13,6 +13,17 @@ namespace login_game.Controllers
             _context = context;
         }
 
+        private bool IsValidUser()
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
+            var userPassword = HttpContext.Session.GetString("UserPassword");
+
+            if (userId == null) return false;
+
+            var user = _context.Users.FirstOrDefault(u => u.Id == userId);
+            return user != null && user.Password == userPassword;
+        }
+
         public IActionResult Index()
         {
             return View();
@@ -33,21 +44,9 @@ namespace login_game.Controllers
         [HttpGet]
         public IActionResult Questionnaire()
         {
+            if (!IsValidUser()) return RedirectToAction("Login");
+
             var UserId = HttpContext.Session.GetInt32("UserId");
-            var UserPassword = HttpContext.Session.GetString("UserPassword");
-
-            if (UserId == null)
-            {
-                return RedirectToAction("Login");
-            }
-
-            var User = _context.Users.First(u => u.Id == UserId);
-
-            if (User.Password != UserPassword)
-            {
-                return RedirectToAction("Login");
-            }
-
             if (_context.PersonalInfos.Any(u => u.UserId == UserId))
             {
                 return RedirectToAction("Profile");
@@ -59,44 +58,17 @@ namespace login_game.Controllers
         [HttpGet]
         public IActionResult Profile()
         {
-            var UserId = HttpContext.Session.GetInt32("UserId");
-            var UserPassword = HttpContext.Session.GetString("UserPassword");
-
-            if (UserId == null)
-            {
-                return RedirectToAction("Login");
-            }
-
-            var User = _context.Users.First(u => u.Id == UserId);
-
-            if (User.Password != UserPassword)
-            {
-                return RedirectToAction("Login");
-            }
+            if (!IsValidUser()) return RedirectToAction("Login");
 
             return View();
         }
 
-        [HttpGet]
         public IActionResult Win()
         {
-            var UserId = HttpContext.Session.GetInt32("UserId");
-            var UserPassword = HttpContext.Session.GetString("UserPassword");
-
-            if (UserId == null)
-            {
-                return RedirectToAction("Login");
-            }
-
-            var User = _context.Users.First(u => u.Id == UserId);
-
-            if (User.Password != UserPassword)
-            {
-                return RedirectToAction("Login");
-            }
+            if (!IsValidUser()) return RedirectToAction("Login");
 
             var random = new Random();
-            int n = random.Next(0, 100);
+            int n = random.Next(0, 1000);
 
             ViewData["error"] = n.ToString();
 

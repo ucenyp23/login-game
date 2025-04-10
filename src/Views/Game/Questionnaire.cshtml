@@ -2,22 +2,33 @@
     ViewData["Title"] = "Questionnaire";
 }
 
-<div>
+<div class="container">
     <h1>Questionnaire</h1>
     <form action="/Game/Questionnaire" method="post">
         <h2>Personal Questions</h2>
-        <input type="date" name="birthday" placeholder="Date of birth..." /><br />
-        <select name="gender">
-            <option value="" selected disabled hidden>Gender...</option>
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-            <option value="other">Other</option>
-        </select>
+        <div class="form-group">
+            <input class="input-field" type="date" name="birthday" placeholder="Date of birth..." />
+        </div>
+        <div class="form-group">
+            <select class="input-field" name="gender">
+                <option value="" selected disabled hidden>Gender...</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+            </select>
+        </div>
+        
         <h2>Security Questions</h2>
-        <input type="text" name="sec0" placeholder="What is the name of the first school you attended..." /><br />
-        <input type="text" name="sec1" placeholder="What is the name of the city where you were born..." /><br />
-        <input type="text" name="sec2" placeholder="What is first name of your oldest cousin..." /><br />
-        <input type="submit" value="Submit" />
-        <p style="color: red">@ViewData["error"]</p>
+        <div class="form-group">
+            <input class="input-field" type="text" name="sec0" placeholder="What is the name of the first school you attended..." />
+        </div>
+        <div class="form-group">
+            <input class="input-field" type="text" name="sec1" placeholder="What is the name of the city where you were born..." />
+        </div>
+        <div class="form-group">
+            <input class="input-field" type="text" name="sec2" placeholder="What is first name of your oldest cousin..." />
+        </div>
+        <button class="btn" type="submit">Submit</button>
+        <p class="error-message">@ViewData["error"]</p>
     </form>
 </div>
