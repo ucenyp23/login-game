@@ -24,7 +24,8 @@ namespace login_game.Controllers
             return user != null && user.Password == userPassword;
         }
 
-        public IActionResult Index()
+		[HttpGet]
+		public IActionResult Index()
         {
             return View();
         }
@@ -63,7 +64,8 @@ namespace login_game.Controllers
             return View();
         }
 
-        public IActionResult Win()
+		[HttpGet]
+		public IActionResult Win()
         {
             if (!IsValidUser()) return RedirectToAction("Login");
 
